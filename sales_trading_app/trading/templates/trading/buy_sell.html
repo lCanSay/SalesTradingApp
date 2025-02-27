@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Buy/Sell</h1>
+<p>This is the Buy/Sell page.</p>
+
+<div>
+    <a href="{% url 'place-order' %}" class="btn btn-primary">Create Order</a>
+</div>
+
+
+<div style="margin-top: 20px;">
+    <a href="{% url 'order-list' %}" class="btn btn-info">View All Orders</a>
+</div>
+{% endblock %}

@@ -1,9 +1,9 @@
-<!DOCTYPE html>
-<html>
-<head>
+{% extends 'base.html' %}
+
+
+{% block content %}
     <title>Create Product</title>
-</head>
-<body>
+
     <h1>Create Product</h1>
     <form method="post" enctype="multipart/form-data">
         {% csrf_token %}
@@ -11,5 +11,4 @@
         <button type="submit">Save</button>
     </form>
     <a href="{% url 'product-list' %}">Cancel</a>
-</body>
-</html>
+{% endblock %}

@@ -10,7 +10,6 @@ class Order(models.Model):
     ]
     STATUS_CHOICES = [
         ('PENDING', 'Pending'),
-        ('PARTIALLY_COMPLETED', 'Partially_completed'),
         ('COMPLETED', 'Completed'),
         ('CANCELLED', 'Cancelled'),
     ]
@@ -21,6 +20,10 @@ class Order(models.Model):
     order_type = models.CharField(max_length=10, choices=ORDER_TYPE_CHOICES)
     status = models.CharField(max_length=19, choices=STATUS_CHOICES, default='PENDING')
     created_at = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def total_price(self):
+        return self.quantity * self.price
 
     def __str__(self):
         return f"{self.order_type} order for {self.product.name} by {self.user.username}"

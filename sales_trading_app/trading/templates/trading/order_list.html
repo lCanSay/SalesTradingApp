@@ -1,0 +1,31 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Buy/Sell Orders</h2>
+
+<h3>Sell Orders</h3>
+<ul>
+    {% for order in sell_orders %}
+        <li>
+            {{ order.product.name }} - {{ order.quantity }} units at ${{ order.price }} each
+            <p>Total: ${{ order.total_price }}</p>
+            <p>Created by: {{ order.user.username }}</p>
+            <a href="{% url 'buy-order' order.id %}">Buy</a>
+        </li>
+    {% endfor %}
+</ul>
+
+<h3>Buy Orders</h3>
+<ul>
+    {% for order in buy_orders %}
+        <li>
+            {{ order.product.name }} - {{ order.quantity }} units at ${{ order.price }} each
+            <p>Total: ${{ order.total_price }}</p>
+            <p>Created by: {{ order.user.username }}</p>
+            <a href="{% url 'sell-order' order.id %}">Sell</a>
+        </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

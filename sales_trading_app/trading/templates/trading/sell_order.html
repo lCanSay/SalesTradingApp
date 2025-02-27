@@ -1,0 +1,17 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Sell Order</h2>
+<p>Product: {{ order.product.name }}</p>
+<p>Quantity: {{ order.quantity }}</p>
+<p>Price per unit: ${{ order.price }}</p>
+<p>Total: ${{ order.total_price }}</p>
+
+<form method="post">
+    {% csrf_token %}
+    <button type="submit">Confirm Sell</button>
+</form>
+
+<a href="{% url 'order-list' %}">Back to Order List</a>
+{% endblock %}

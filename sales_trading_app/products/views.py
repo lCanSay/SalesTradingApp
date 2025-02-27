@@ -1,11 +1,11 @@
 from django.http import JsonResponse
 from rest_framework import viewsets, permissions
 
-from products.forms import ProductForm
+from products.forms import ProductEditForm, ProductForm
 from users.authentication import CookieJWTAuthentication
 from .models import Product
 from .serializers import ProductSerializer
-from django.shortcuts import redirect, render
+from django.shortcuts import get_object_or_404, redirect, render
 from rest_framework_simplejwt.authentication import JWTAuthentication
 from rest_framework.exceptions import AuthenticationFailed
 from django.views.decorators.csrf import csrf_exempt
@@ -53,7 +53,7 @@ def product_list(request):
 @csrf_exempt
 def product_create(request):
     try:
-        jwt_auth = JWTAuthentication()
+        jwt_auth = CookieJWTAuthentication()
         user, _ = jwt_auth.authenticate(request)
         if user and user.role in ['ADMIN', 'TRADER']:
             if request.method == 'POST':
@@ -65,6 +65,24 @@ def product_create(request):
                 form = ProductForm()
             return render(request, 'products/product_form.html', {'form': form})
         else:
-            return JsonResponse({'error': 'Unauthorized'}, status=401)
+            return JsonResponse({'error': 'You dont have rights to create.'}, status=401)
     except AuthenticationFailed:
         return JsonResponse({'error': 'Invalid token'}, status=401)
+    
+    
+@csrf_exempt
+def edit_product(request, product_id):
+    product = get_object_or_404(Product, id=product_id)
+    
+    if request.user.role != 'ADMIN':
+        return redirect('product-list')
+
+    if request.method == 'POST':
+        form = ProductEditForm(request.POST, instance=product)
+        if form.is_valid():
+            form.save()
+            return redirect('product-list')
+    else:
+        form = ProductEditForm(instance=product)
+    
+    return render(request, 'products/edit_product.html', {'form': form, 'product': product})

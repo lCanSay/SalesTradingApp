@@ -1,0 +1,34 @@
+
+{% extends 'base.html' %}
+
+{% block content %}
+<h2>Place Order</h2>
+<form method="post">
+    {% csrf_token %}
+    
+    <div class="form-group">
+        <label>Order Type</label>
+        {{ form.order_type }}
+    </div>
+
+    <div class="form-group">
+        <label>Product</label>
+        {{ form.product }}
+    </div>
+
+    <div class="form-group">
+        <label>Quantity</label>
+        {{ form.quantity }}
+    </div>
+
+    <div class="form-group">
+        <label>Price per Unit</label>
+        {{ form.price }}
+    </div>
+
+
+    <button type="submit" class="btn btn-primary">Place Order</button>
+</form>
+
+<a href="{% url 'buy-sell' %}" class="btn btn-secondary">Back to Buy/Sell</a>
+{% endblock %}

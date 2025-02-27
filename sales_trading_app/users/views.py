@@ -3,7 +3,7 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
-from .forms import LoginForm, RegistrationForm
+from .forms import LoginForm, ProfileForm, RegistrationForm
 
 @csrf_exempt
 def user_login(request):
@@ -19,6 +19,9 @@ def user_login(request):
                 refresh = RefreshToken.for_user(user)
                 access_token = str(refresh.access_token)
                 refresh_token = str(refresh)
+
+                print(f"Access Token: {access_token}")  # Debug print
+                print(f"Refresh Token: {refresh_token}")  # Debug print
 
                 response = redirect('product-list') 
                 response.set_cookie('access_token', access_token, httponly=True)
@@ -73,3 +76,16 @@ def user_logout(request):
     response.delete_cookie('access_token')
     response.delete_cookie('refresh_token')
     return response
+
+@csrf_exempt
+def profile(request):
+    # return render(request, 'users/profile.html', {'user': request.user})
+    user = request.user
+    if request.method == 'POST':
+        form = ProfileForm(request.POST, request.FILES, instance=user)
+        if form.is_valid():
+            form.save()
+            return redirect('profile')
+    else:
+        form = ProfileForm(instance=user)
+    return render(request, 'users/profile.html', {'form': form})
