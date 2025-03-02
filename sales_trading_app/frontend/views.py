@@ -6,7 +6,7 @@ from django.shortcuts import get_object_or_404, redirect, render
 from .forms import LoginForm, ProfileForm, RegistrationForm
 from .forms import ProductForm
 from products.models import Product
-from trading.models import Order
+from trading.models import Order, Transaction
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
 from django.http import HttpResponse
@@ -19,11 +19,8 @@ from io import BytesIO
 from rest_framework.permissions import AllowAny
 
 from reportlab.lib.pagesizes import A4
-from reportlab.lib import colors
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle
-import io
-import datetime
-from django.views import View
+from django.db import models
+
 
 
 
@@ -138,17 +135,51 @@ def place_order(request):
 def buy_order(request, order_id):
     order = get_object_or_404(Order, id=order_id, order_type='SELL', status='PENDING')
     if request.method == 'POST':
+
+        Transaction.objects.create(
+            buy_order=Order.objects.create(
+                user=request.user,
+                product=order.product,
+                quantity=order.quantity,
+                price=order.price,
+                order_type='BUY',
+                status='FULFILLED'
+            ),
+            sell_order=order,
+            quantity=order.quantity,
+            price=order.price
+        )
+        
         order.status = 'FULFILLED'
         order.save()
+        messages.success(request, "You have successfully purchased the product.")
+
         return redirect('frontend:order-list')
     return render(request, 'trading/buy_order.html', {'order': order})
 
 @login_required
 def sell_order(request, order_id):
     order = get_object_or_404(Order, id=order_id, order_type='BUY', status='PENDING')
+
     if request.method == 'POST':
+        Transaction.objects.create(
+            buy_order=order,
+            sell_order=Order.objects.create(
+                user=request.user,
+                product=order.product,
+                quantity=order.quantity,
+                price=order.price,
+                order_type='SELL',
+                status='FULFILLED'
+            ),
+            quantity=order.quantity,
+            price=order.price
+        )
+
         order.status = 'FULFILLED'
         order.save()
+        messages.success(request, "You have successfully sold the product.")
+
         return redirect('frontend:order-list')
     return render(request, 'trading/sell_order.html', {'order': order})
 
@@ -194,3 +225,12 @@ class InvoiceRetrievePDFView(generics.RetrieveAPIView):
         response = HttpResponse(buffer.read(), content_type='application/pdf')
         response['Content-Disposition'] = f'attachment; filename="invoice_{order.id}.pdf"'
         return response
+    
+
+@login_required
+def user_transactions(request):
+    transactions = Transaction.objects.filter(
+        models.Q(buy_order__user=request.user) | models.Q(sell_order__user=request.user)
+    ).order_by('-created_at')
+
+    return render(request, 'frontend/user_transactions.html', {'transactions': transactions})

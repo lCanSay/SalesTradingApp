@@ -1,5 +1,5 @@
 from django.urls import path, include
-from .views import InvoiceRetrievePDFView, buy_order, buy_sell, edit_product, order_list, place_order, product_create, product_list, sell_order, user_login, register, user_logout, profile, user_orders
+from .views import InvoiceRetrievePDFView, buy_order, buy_sell, edit_product, order_list, place_order, product_create, product_list, sell_order, user_login, register, user_logout, profile, user_orders, user_transactions
 
 app_name = "frontend"
 
@@ -20,4 +20,6 @@ urlpatterns = [
     path('buy/<int:order_id>/', buy_order, name='buy-order'),
     path('sell/<int:order_id>/', sell_order, name='sell-order'),
     path('orders/<int:pk>/invoice/', InvoiceRetrievePDFView.as_view(), name='order-invoice'),
+
+    path('user-transactions/', user_transactions, name='user-transactions'),
 ]

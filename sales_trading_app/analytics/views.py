@@ -25,7 +25,7 @@ class InvoicePDFView(LoginRequiredMixin, View):
         elements = []
         styles = getSampleStyleSheet()
 
-        # Title
+
         title = Paragraph(f"<b>Invoice Report - {today_date}</b>", styles["Title"])
         elements.append(title)
         elements.append(Spacer(1, 10))
@@ -34,12 +34,10 @@ class InvoicePDFView(LoginRequiredMixin, View):
         elements.append(user_info)
         elements.append(Spacer(1, 20))
 
-        # Table Headers
         data = [
             ["Order ID", "Product", "Type", "Quantity", "Price/Unit", "Total", "Status", "Created At"]
         ]
 
-        # Order Details
         for order in orders:
             data.append([
                 order.id,
@@ -52,7 +50,6 @@ class InvoicePDFView(LoginRequiredMixin, View):
                 order.created_at.strftime("%Y-%m-%d %H:%M"),
             ])
 
-        # Table Styling
         table = Table(data, colWidths=[60, 80, 60, 50, 60, 60, 80, 90])
         table.setStyle(TableStyle([
             ("BACKGROUND", (0, 0), (-1, 0), colors.grey),
@@ -66,22 +63,20 @@ class InvoicePDFView(LoginRequiredMixin, View):
         elements.append(table)
         elements.append(Spacer(1, 20))
 
-        # 📊 **Data Analysis**
+
         total_orders = orders.count()
         total_spent = sum(order.total_price for order in orders if order.order_type == "BUY")
         total_earned = sum(order.total_price for order in orders if order.order_type == "SELL")
         
-        # Order Status Breakdown
+
         status_counts = Counter(orders.values_list("status", flat=True))
         pending_count = status_counts.get("PENDING", 0)
         fulfilled_count = status_counts.get("FULFILLED", 0)
         cancelled_count = status_counts.get("CANCELLED", 0)
 
-        # Most Traded Product
         product_counts = Counter(order.product.name for order in orders)
         most_traded_product = product_counts.most_common(1)[0][0] if product_counts else "N/A"
 
-        # **Summary Section**
         summary_data = [
             ["Total Orders", total_orders],
             ["Total Spent (Buy Orders)", f"${total_spent}"],
