@@ -26,9 +26,9 @@
                     <td>{{ transaction.buy_order.product.name }}</td>
                     <td>{{ transaction.quantity }}</td>
                     <td>${{ transaction.price }}</td>
-                    <td>${{ transaction.quantity|floatformat:2|default:0|add:transaction.price|floatformat:2 }}</td>
+                    <td>${{ transaction.total_price|floatformat:2 }}</td>
                     <td>{{ transaction.created_at|date:"Y-m-d H:i" }}</td>
-                </tr>
+                </tr>   
                 {% empty %}
                 <tr>
                     <td colspan="8" class="text-center">No transactions found.</td>
