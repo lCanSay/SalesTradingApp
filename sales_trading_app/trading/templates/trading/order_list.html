@@ -11,7 +11,7 @@
             {{ order.product.name }} - {{ order.quantity }} units at ${{ order.price }} each
             <p>Total: ${{ order.total_price }}</p>
             <p>Created by: {{ order.user.username }}</p>
-            <a href="{% url 'buy-order' order.id %}">Buy</a>
+            <a href="{% url 'frontend:buy-order' order.id %}">Buy</a>
         </li>
     {% endfor %}
 </ul>
@@ -23,7 +23,7 @@
             {{ order.product.name }} - {{ order.quantity }} units at ${{ order.price }} each
             <p>Total: ${{ order.total_price }}</p>
             <p>Created by: {{ order.user.username }}</p>
-            <a href="{% url 'sell-order' order.id %}">Sell</a>
+            <a href="{% url 'frontend:sell-order' order.id %}">Sell</a>
         </li>
     {% endfor %}
 </ul>

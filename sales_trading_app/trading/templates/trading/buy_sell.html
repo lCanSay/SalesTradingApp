@@ -5,11 +5,11 @@
 <p>This is the Buy/Sell page.</p>
 
 <div>
-    <a href="{% url 'place-order' %}" class="btn btn-primary">Create Order</a>
+    <a href="{% url 'frontend:place-order' %}" class="btn btn-primary">Create Order</a>
 </div>
 
 
 <div style="margin-top: 20px;">
-    <a href="{% url 'order-list' %}" class="btn btn-info">View All Orders</a>
+    <a href="{% url 'frontend:order-list' %}" class="btn btn-info">View All Orders</a>
 </div>
 {% endblock %}

@@ -1,6 +1,8 @@
 from django import forms
 from django.contrib.auth import get_user_model, authenticate
-from .models import User
+from users.models import User
+from products.models import Product
+from trading.models import Order
 
 User = get_user_model()
 
@@ -55,3 +57,22 @@ class ProfileForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['username', 'email', 'profile_picture']
+
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = ['name', 'description', 'category', 'price', 'image'] 
+
+
+class BuySellOrderForm(forms.ModelForm):
+    ORDER_TYPES = [
+        ('BUY', 'Buy'),
+        ('SELL', 'Sell'),
+    ]
+
+    order_type = forms.ChoiceField(choices=ORDER_TYPES, widget=forms.RadioSelect)
+
+    class Meta:
+        model = Order
+        fields = ['product', 'quantity', 'price', 'order_type']

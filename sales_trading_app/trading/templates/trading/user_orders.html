@@ -27,7 +27,7 @@
             <td>{{ order.get_status_display }}</td>
             <td>{{ order.created_at }}</td>
             <td>
-                <a href="{% url 'order-invoice' order.id %}" class="btn btn-primary" target="_blank">Download Invoice</a>
+                <a href="{% url 'frontend:order-invoice' order.id %}" class="btn btn-primary" target="_blank">Download Invoice</a>
             </td>
         </tr>
         {% empty %}
@@ -37,6 +37,7 @@
         {% endfor %}
     </tbody>
 </table>
+<a href="{% url 'invoice-pdf' %}" class="btn btn-primary">Full invoice</a>
 
-<a href="{% url 'buy-sell' %}" class="btn btn-primary">Back to Buy/Sell</a>
+<a href="{% url 'frontend:buy-sell' %}" class="btn btn-primary">Back to Buy/Sell</a>
 {% endblock %}
