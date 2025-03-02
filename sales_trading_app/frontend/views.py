@@ -20,6 +20,7 @@ from rest_framework.permissions import AllowAny
 
 from reportlab.lib.pagesizes import A4
 from django.db import models
+from sales_trading_app.utils import send_order_notification
 
 
 
@@ -152,6 +153,14 @@ def buy_order(request, order_id):
         
         order.status = 'FULFILLED'
         order.save()
+
+        buyer = request.user
+        seller = order.user
+        
+        subject = "Your order has been bought!"
+        message = f"Hello {seller.username},\n\nYour order for {order.quantity} at {order.price} has been purchased by {buyer.username}!"
+        send_order_notification(seller.email, subject, message)
+
         messages.success(request, "You have successfully purchased the product.")
 
         return redirect('frontend:order-list')
@@ -178,6 +187,14 @@ def sell_order(request, order_id):
 
         order.status = 'FULFILLED'
         order.save()
+
+        seller = request.user
+        buyer = order.user
+        
+        subject = "Your order has been sold!"
+        message = f"Hello {buyer.username},\n\nYour order for {order.quantity} at {order.price} has been sold to {seller.username}!"
+        send_order_notification(buyer.email, subject, message)
+
         messages.success(request, "You have successfully sold the product.")
 
         return redirect('frontend:order-list')
