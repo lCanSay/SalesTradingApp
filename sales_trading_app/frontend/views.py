@@ -154,12 +154,13 @@ def buy_order(request, order_id):
         order.status = 'FULFILLED'
         order.save()
 
-        # buyer = request.user
-        # seller = order.user
+        buyer = request.user
+        seller = order.user
         
-        # subject = "Your order has been bought!"
-        # message = f"Hello {seller.username},\n\nYour order for {order.quantity} at {order.price} has been purchased by {buyer.username}!"
-        # send_order_notification(seller.email, subject, message)
+        subject = "Your order has been bought!"
+        message = f"Hello {seller.username},\n\nYour order for {order.quantity} {order.product} at {order.price} has been purchased by {buyer.username}!"
+        send_order_notification.delay(seller.email, subject, message)
+
 
         messages.success(request, "You have successfully purchased the product.")
 
@@ -188,12 +189,12 @@ def sell_order(request, order_id):
         order.status = 'FULFILLED'
         order.save()
 
-        # seller = request.user
-        # buyer = order.user
+        seller = request.user
+        buyer = order.user
         
-        # subject = "Your order has been sold!"
-        # message = f"Hello {buyer.username},\n\nYour order for {order.quantity} at {order.price} has been sold to {seller.username}!"
-        # send_order_notification(buyer.email, subject, message)
+        subject = "Your order has been sold!"
+        message = f"Hello {buyer.username},\n\nYour order for {order.quantity} {order.product} at {order.price} has been sold to {seller.username}!"
+        send_order_notification.delay(buyer.email, subject, message)
 
         messages.success(request, "You have successfully sold the product.")
 

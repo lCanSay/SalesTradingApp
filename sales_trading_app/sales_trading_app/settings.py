@@ -17,6 +17,8 @@ import rest_framework
 from dotenv import load_dotenv
 import dj_database_url
 
+load_dotenv()
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
 MEDIA_URL = '/media/' 
@@ -91,10 +93,19 @@ WSGI_APPLICATION = 'sales_trading_app.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
-load_dotenv()
 DATABASES = {
-    'default': dj_database_url.config(default=os.getenv('DATABASE_URL'))
+    # 'default': dj_database_url.config(default=os.getenv("DATABASE_URL"))
+
+    'default': {
+        'ENGINE': 'django.db.backends.postgresql',
+        'NAME': 'sales_db',
+        'USER': 'postgres',
+        'PASSWORD': 'admin123',
+        'HOST': 'localhost',
+        'PORT': '5432',
+    }
 }
+
 
 
 AUTH_PASSWORD_VALIDATORS = [
@@ -159,3 +170,15 @@ SIMPLE_JWT = {
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+EMAIL_BACKEND = "django.core.mail.backends.smtp.EmailBackend"
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = int(os.getenv("EMAIL_PORT", 587))
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS") == "True"
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
+
+CELERY_BROKER_URL = 'redis://localhost:6379/0'
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'
+CELERY_IGNORE_RESULT = False
+
