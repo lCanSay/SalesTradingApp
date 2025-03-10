@@ -8,4 +8,5 @@ router.register(r'users', UserViewSet)
 urlpatterns = [
     path('', include(router.urls)),
     path('profile/', UserDetailView.as_view(), name='user-profile'),
+    path('register/', UserDetailView.as_view(), name='register'),
 ]

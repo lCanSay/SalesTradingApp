@@ -1,7 +1,12 @@
+from django.contrib.auth import get_user_model
+from .serializers import RegistrationSerializer, UserSerializer
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework import status
+from rest_framework.response import Response
 from rest_framework import viewsets, permissions, generics
 from rest_framework.permissions import BasePermission
-from django.contrib.auth import get_user_model
-from .serializers import UserSerializer
+
 
 User = get_user_model()
 
@@ -24,3 +29,12 @@ class UserDetailView(generics.RetrieveUpdateDestroyAPIView):
         if self.request.method in ['PUT', 'PATCH', 'DELETE']:
             return [IsOwnerOrAdmin()]
         return super().get_permissions()
+    
+@api_view(['POST'])
+@permission_classes([AllowAny])
+def register(request):
+    serializer = RegistrationSerializer(data=request.data)
+    if serializer.is_valid():
+        user = serializer.save()
+        return Response({"message": "Registration successful", "user": UserSerializer(user).data}, status=status.HTTP_201_CREATED)
+    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
