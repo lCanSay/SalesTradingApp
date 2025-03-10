@@ -94,16 +94,16 @@ WSGI_APPLICATION = 'sales_trading_app.wsgi.application'
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
 DATABASES = {
-    # 'default': dj_database_url.config(default=os.getenv("DATABASE_URL"))
+    'default': dj_database_url.config(default=os.getenv("DATABASE_URL"))
 
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sales_db',
-        'USER': 'postgres',
-        'PASSWORD': 'admin123',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
+    # 'default': {
+    #     'ENGINE': 'django.db.backends.postgresql',
+    #     'NAME': 'sales_db',
+    #     'USER': 'postgres',
+    #     'PASSWORD': 'admin123',
+    #     'HOST': 'localhost',
+    #     'PORT': '5432',
+    # }
 }
 
 
